@@ -252,7 +252,7 @@ IMAGE_CMD_resin-sdcard () {
     mkfs.vfat -n "${RESIN_CONFIG_FS_LABEL}" -S 512 -C ${WORKDIR}/config.img $CONFIG_BLOCKS
 
     # Copy config.json to config partition
-    mcopy -i ${WORKDIR}/config.img -v ${WORKDIR}/config.json ::
+    mcopy -i ${DEPLOY_DIR_IMAGE}/config.img -v ${WORKDIR}/config.json ::
 
     # Label what is not labeled
     e2label ${RESIN_SDIMG_ROOTFS} ${RESIN_ROOT_FS_LABEL}
