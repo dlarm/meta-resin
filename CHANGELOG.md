@@ -1,6 +1,28 @@
 Change log
 -----------
 
+# v1.1.3 - 2016-04-13
+
+* Add resin-init-board as a runtime dependency to resin-init-flasher [Florin]
+
+# v1.1.2 - 2016-04-13
+
+* Execute resin-init-board from the flasher also [Florin]
+* Use realpath from coreutils-native for generating SD images [Andrei]
+* Add rsync to our image [Theodor]
+* Add p2p to NetworkInterfaceBlacklist in connman main.conf file [Florin]
+* Add dnsmasq and do changes to connman so dnsmasq is used according to our platform needs [Florin]
+* Define "rce" as a provider for the "docker" package [Florin]
+
+# v1.1.1 - 2016-03-03
+
+* Make resin-supervisor-disk's PV variable not contain the ':' character [Florin]
+* Workaround for "docker images" behavior - https://bugzilla.redhat.com/show_bug.cgi?id=1312934 [Florin]
+* Have device registration provided by supervisor in resin-image and resin-device-register in resin-image-flasher [Andrei]
+* Include crda in resin images [Andrei]
+* Add support for hid-multitouch - available as kernel module [Andrei]
+* Simplify os-release version and add some resin specific info [Andrei]
+* Set IMAGE_ROOTFS_SIZE to zero as default [Florin]
 * Update layer with the ability to use jethro [Theodor]
 
 # v1.1.0 - 2016-02-16

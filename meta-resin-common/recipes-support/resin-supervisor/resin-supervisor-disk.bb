@@ -13,7 +13,6 @@ SRC_URI = " \
     file://supervisor.conf \
     file://resin-data.mount \
     file://resin-supervisor.service \
-    file://resin-supervisor-host-socket.service \
     file://update-resin-supervisor \
     file://update-resin-supervisor.service \
     file://update-resin-supervisor.timer \
@@ -31,7 +30,6 @@ DOCKER_PID_FILE ?= "/var/run/docker.pid"
 
 SYSTEMD_SERVICE_${PN} = " \
     resin-supervisor.service \
-    resin-supervisor-host-socket.service \
     update-resin-supervisor.service \
     update-resin-supervisor.timer \
     "
@@ -44,9 +42,8 @@ FILES_${PN} += " \
 
 RDEPENDS_${PN} = " \
     bash \
-    rce \
+    docker \
     coreutils \
-    socat \
     resin-conf \
     systemd \
     curl \
@@ -110,7 +107,9 @@ python () {
         pull_output = subprocess.Popen(pull_cmd, shell=True, stdout=subprocess.PIPE).communicate()[0]
 
     # Inspect for fetching the version only if image exists
-    imagechk_cmd = "docker images %s | grep %s" % (target_repository, tag_repository)
+    # on Fedora 23 at least, docker has suffered slight changes (https://bugzilla.redhat.com/show_bug.cgi?id=1312934)
+    # hence we need the following workaround until the above bug is fixed:
+    imagechk_cmd = "docker images | grep '^\S*%s\s*%s'" % (target_repository, tag_repository)
     imagechk_output = subprocess.Popen(imagechk_cmd, shell=True, stdout=subprocess.PIPE).communicate()[0]
     if imagechk_output == "":
         bb.fatal("resin-supervisor-disk: No local supervisor images found.")
@@ -122,8 +121,8 @@ python () {
     image_id_output = subprocess.Popen(image_id_cmd, shell=True, stdout=subprocess.PIPE).communicate()[0]
     if image_id_output == "" or image_id_output == None:
         bb.fatal("resin-supervisor-disk: Cannot fetch image id.")
-    d.setVar('SUPERVISOR_VERSION', "%s-%s" % (version_output, image_id_output[:12]))
-    d.setVar('PV', "%s+%s" % (version_output, image_id_output))
+    d.setVar('SUPERVISOR_VERSION', "%s-%s" % (version_output, image_id_output.split(':',1)[-1][:12]))
+    d.setVar('PV', "%s+%s" % (version_output, image_id_output.split(':',1)[-1]))
 }
 
 do_patch[noexec] = "1"
@@ -169,7 +168,6 @@ do_install () {
         install -c -m 0644 ${WORKDIR}/resin-data.mount ${D}${systemd_unitdir}/system/resin\\x2ddata.mount
 
         install -c -m 0644 ${WORKDIR}/resin-supervisor.service ${D}${systemd_unitdir}/system
-        install -c -m 0644 ${WORKDIR}/resin-supervisor-host-socket.service ${D}${systemd_unitdir}/system
         install -c -m 0644 ${WORKDIR}/update-resin-supervisor.service ${D}${systemd_unitdir}/system
         install -c -m 0644 ${WORKDIR}/update-resin-supervisor.timer ${D}${systemd_unitdir}/system
         sed -i -e 's,@BASE_BINDIR@,${base_bindir},g' \

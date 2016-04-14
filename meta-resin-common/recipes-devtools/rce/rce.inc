@@ -3,8 +3,8 @@ LIC_FILES_CHKSUM = "file://${RESIN_COREBASE}/COPYING.Apache-2.0;md5=89aea4e17d99
 
 AMAZON_RESIN_SHARE = "https://s3.amazonaws.com/resin-share/build_requirements"
 
-PROVIDES = "rce"
-RPROVIDES_${PN} = "rce"
+PROVIDES = "docker"
+RPROVIDES_${PN} = "docker"
 
 SRC_URI_append = " \
     file://renamed-rce.mount \
