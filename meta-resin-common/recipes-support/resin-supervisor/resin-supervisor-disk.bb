@@ -22,7 +22,7 @@ S = "${WORKDIR}"
 PROVIDES="resin-supervisor"
 RPROVIDES_${PN} = "resin-supervisor"
 
-PARTITION_SIZE ?= "1024"
+PARTITION_SIZE ?= "1512"
 LED_FILE ?= "/dev/null"
 
 RESIN_CHECK_CONN_URL ?= "index.docker.io"
